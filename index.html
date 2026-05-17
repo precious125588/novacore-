@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#0a0a0f"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>NovaCore</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="stylesheet" href="css/main.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" crossorigin="anonymous"/>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="splash">
+  <div class="splash-logo">
+    <svg width="72" height="72" viewBox="0 0 80 80" fill="none">
+      <circle cx="40" cy="40" r="38" stroke="url(#g1)" stroke-width="3"/>
+      <path d="M28 25L55 40L28 55V25Z" fill="url(#g2)"/>
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient>
+        <linearGradient id="g2" x1="28" y1="25" x2="55" y2="55" gradientUnits="userSpaceOnUse"><stop stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient>
+      </defs>
+    </svg>
+    <h1 class="splash-title">NovaCore</h1>
+    <p class="splash-sub">Your All-in-One Power App</p>
+  </div>
+  <div class="splash-loader"><div class="splash-bar"></div></div>
+  <p class="splash-status" id="splash-status">Starting up...</p>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="app hidden">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">NovaCore</span>
+      <span class="status-dot" id="online-dot"></span>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="NCsearch.open()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-btn" onclick="NC.notifications.show()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <button class="icon-btn" onclick="NCui.showView('view-settings')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEWS -->
+  <main class="views">
+
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+      <div class="scroll-area">
+        <!-- Permission Banner -->
+        <div id="perm-banner" class="perm-banner hidden">
+          <span>📂 Grant file access for the best experience</span>
+          <button onclick="NC.files.pickAny();NC.permissions.hideBanner()">Allow</button>
+          <button style="background:none;color:var(--text3);padding:6px;font-size:18px" onclick="NC.permissions.hideBanner()">✕</button>
+        </div>
+        <section class="home-section">
+          <h2 class="section-title">Continue Watching</h2>
+          <div class="scroll-row" id="continue-watching">
+            <div style="color:var(--text3);font-size:12px;padding:8px 0">Nothing yet</div>
+          </div>
+        </section>
+        <section class="home-section">
+          <h2 class="section-title">Recently Played</h2>
+          <div class="scroll-row" id="recently-played">
+            <div style="color:var(--text3);font-size:12px;padding:8px 0">Nothing yet</div>
+          </div>
+        </section>
+        <section class="home-section">
+          <h2 class="section-title">Quick Access</h2>
+          <div class="quick-grid">
+            <button class="quick-card" onclick="NC.files.pickVideo()"><div class="qc-icon">🎬</div><span>Play Video</span></button>
+            <button class="quick-card" onclick="NC.files.pickAudio()"><div class="qc-icon">🎵</div><span>Play Music</span></button>
+            <button class="quick-card" onclick="NCui.showView('view-downloader')"><div class="qc-icon">⬇️</div><span>Download</span></button>
+            <button class="quick-card" onclick="NCui.showView('view-status')"><div class="qc-icon">💾</div><span>Status Saver</span></button>
+            <button class="quick-card" onclick="NCui.showView('view-ai')"><div class="qc-icon">🤖</div><span>AI</span></button>
+            <button class="quick-card" onclick="NCui.showView('view-code')"><div class="qc-icon">💻</div><span>Code</span></button>
+            <button class="quick-card" onclick="NCui.showView('view-files')"><div class="qc-icon">📁</div><span>Files</span></button>
+            <button class="quick-card" onclick="NCvault.open()"><div class="qc-icon">🔒</div><span>Vault</span></button>
+          </div>
+        </section>
+        <section class="home-section">
+          <div class="card" style="margin-bottom:0">
+            <h3 class="card-title" style="margin-bottom:6px">Open a file from device</h3>
+            <p class="card-sub">NovaCore routes any file to the right tool automatically</p>
+            <button class="btn-primary full" onclick="NC.files.pickAny()">📂 Browse Device Files</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- LIBRARY -->
+    <div id="view-library" class="view">
+      <div class="lib-tabs" id="lib-tabs">
+        <button class="lib-tab active" onclick="NClibrary.showTab('videos',this)">Videos</button>
+        <button class="lib-tab" onclick="NClibrary.showTab('music',this)">Music</button>
+        <button class="lib-tab" onclick="NClibrary.showTab('downloads',this)">Downloads</button>
+        <button class="lib-tab" onclick="NClibrary.showTab('favorites',this)">Favorites</button>
+        <button class="lib-tab" onclick="NClibrary.showTab('history',this)">History</button>
+      </div>
+      <div class="scroll-area" id="library-content"></div>
+    </div>
+
+    <!-- DOWNLOADER -->
+    <div id="view-downloader" class="view">
+      <div class="scroll-area">
+        <div class="card">
+          <h3 class="card-title">Download Anything</h3>
+          <p class="card-sub">TikTok · YouTube · Instagram · Facebook · Twitter · Spotify · SoundCloud · CapCut & more</p>
+          <div class="input-group" style="margin-bottom:8px">
+            <input type="url" id="dl-url" class="input" placeholder="Paste URL here..." onpaste="NCdownloader.onPaste(event)" autocomplete="off" autocorrect="off" spellcheck="false"/>
+            <button class="btn-primary" onclick="NCdownloader.startFromUrl()">Analyze</button>
+          </div>
+          <div id="dl-result" class="dl-result hidden"></div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Active Downloads</h3>
+          <div id="dl-active" class="dl-list"><div class="empty-state"><p>No active downloads</p></div></div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Completed</h3>
+          <div id="dl-complete" class="dl-list"><div class="empty-state"><p>Nothing downloaded yet</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS SAVER -->
+    <div id="view-status" class="view">
+      <div class="scroll-area">
+        <div class="card">
+          <h3 class="card-title">WhatsApp Status Saver</h3>
+          <p class="card-sub">Browse and pick WhatsApp status files from your device to save them permanently</p>
+          <button class="btn-primary full" onclick="NCstatus.pickStatuses()">📂 Browse Status Files</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <h3 class="card-title" style="padding:14px 14px 10px">Saved Statuses</h3>
+          <div id="saved-statuses"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI ASSISTANT -->
+    <div id="view-ai" class="view">
+      <div class="ai-header">
+        <select id="ai-model-select" class="select" style="flex:1" onchange="NCai.setModel(this.value)">
+          <optgroup label="Auto">
+            <option value="auto">🔄 Auto (Best Available)</option>
+            <option value="offline">📴 Offline Brain</option>
+          </optgroup>
+          <optgroup label="Prexzy APIs">
+            <option value="px_gpt5">GPT-5</option>
+            <option value="px_copilot">Copilot</option>
+            <option value="px_claude">Claude</option>
+            <option value="px_deepseek">DeepSeek</option>
+          </optgroup>
+          <optgroup label="DavidCyril APIs">
+            <option value="dc_gpt4">GPT-4</option>
+            <option value="dc_claude">Claude</option>
+            <option value="dc_gemini">Gemini</option>
+            <option value="dc_deepseek">DeepSeek R1</option>
+            <option value="dc_llama3">Llama 3</option>
+            <option value="dc_gpt4omini">GPT-4o Mini</option>
+          </optgroup>
+        </select>
+        <button class="icon-btn" onclick="NCai.clearChat()">🗑</button>
+      </div>
+      <div class="ai-mode-bar">
+        <button class="mode-tab active" onclick="NCai.setMode('chat',this)">💬 Chat</button>
+        <button class="mode-tab" onclick="NCai.setMode('code',this)">💻 Code Help</button>
+        <button class="mode-tab" onclick="NCai.setMode('search',this)">🔍 Search</button>
+        <button class="mode-tab" onclick="NCai.setMode('image',this)">🎨 AI Image</button>
+      </div>
+      <div class="ai-messages" id="ai-messages"></div>
+      <div class="ai-input-area">
+        <textarea class="ai-input" id="ai-input" placeholder="Ask anything..." rows="1"
+          onkeydown="NCai.onKey(event)" oninput="NCai.resize(this)"></textarea>
+        <button class="ai-send-btn" id="ai-send" onclick="NCai.send()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- CODE EDITOR (Full Screen with slide sidebar) -->
+    <div id="view-code" class="view code-view" style="position:relative;overflow:hidden">
+      <!-- Sidebar backdrop (mobile only) -->
+      <div id="sidebar-dimmer" class="sidebar-dimmer" onclick="NCcodeEditor.closeSidebar()"></div>
+      <!-- Slide-out sidebar -->
+      <div id="code-sidebar" class="code-sidebar">
+        <div class="sidebar-header">
+          <span>📁 Explorer</span>
+          <button class="sidebar-close" onclick="NCcodeEditor.closeSidebar()">✕</button>
+        </div>
+        <div class="sidebar-actions" style="padding:6px 8px;display:flex;gap:5px;border-bottom:1px solid var(--border)">
+          <button onclick="NCcodeEditor.newFile()" style="flex:1;padding:7px;background:var(--bg3);border-radius:6px;font-size:12px;cursor:pointer;color:var(--text2)" title="New File">+ New</button>
+          <button onclick="NCcodeEditor.openFile()" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:6px;cursor:pointer" title="Open File">📂</button>
+        </div>
+        <div id="file-tree" class="file-tree"></div>
+        <div class="sidebar-tools">
+          <button class="tool-btn" onclick="NCarchive.openPanel();NCcodeEditor.closeSidebar()">🗜 ZArchiver</button>
+          <button class="tool-btn" onclick="NCfileManager.openPanel();NCcodeEditor.closeSidebar()">📂 MT Manager</button>
+          <button class="tool-btn" onclick="NCcodeEditor.closeSidebar();NCui.showView('view-files')">🗂 File Manager</button>
+        </div>
+      </div>
+      <!-- Editor (full width) -->
+      <div class="code-main" style="display:flex;flex-direction:column;flex:1;overflow:hidden;width:100%">
+        <div class="code-topbar">
+          <!-- Hamburger to open sidebar -->
+          <button class="code-menu-btn" onclick="NCcodeEditor.toggleSidebar()" title="Toggle file sidebar" style="display:flex">☰</button>
+          <div id="code-tabs" class="code-tabs"></div>
+        </div>
+        <div id="code-editor-wrap" class="editor-wrap"></div>
+        <!-- Bottom toolbar — horizontal scroll, no side bar competition -->
+        <div class="code-toolbar">
+          <button class="toolbar-btn" onclick="NCcodeEditor.saveFile()">💾 Save</button>
+          <button class="toolbar-btn" onclick="NCcodeEditor.runCode()">▶ Run</button>
+          <button class="toolbar-btn" onclick="NCai.explainCode()">🤖 Explain</button>
+          <button class="toolbar-btn" onclick="NCai.fixCode()">🔧 Fix Bugs</button>
+          <button class="toolbar-btn" onclick="NCcodeEditor.toggleConsole()">🖥 Console</button>
+          <button class="toolbar-btn" onclick="NCcodeEditor.newFile()">+ New</button>
+          <button class="toolbar-btn" onclick="NCcodeEditor.openFile()">📂 Open</button>
+          <select id="lang-select" class="select-sm" onchange="NCcodeEditor.setLanguage(this.value)" style="height:32px;margin-left:4px">
+            <option value="javascript">JS</option>
+            <option value="htmlmixed">HTML</option>
+            <option value="css">CSS</option>
+            <option value="python">Python</option>
+            <option value="xml">XML</option>
+            <option value="markdown">MD</option>
+            <option value="clike">C/C++</option>
+            <option value="php">PHP</option>
+          </select>
+        </div>
+        <div class="debug-console hidden" id="debug-console">
+          <div class="console-header">
+            <span>Console</span>
+            <button class="btn-sm" onclick="NCcodeEditor.clearConsole()">Clear</button>
+          </div>
+          <div id="console-output" class="console-output"></div>
+          <div class="console-input-row">
+            <span class="console-prompt">&gt;</span>
+            <input id="console-input" class="console-input" placeholder="Evaluate expression..." onkeydown="NCcodeEditor.evalConsole(event)" autocomplete="off" spellcheck="false"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE MANAGER -->
+    <div id="view-files" class="view">
+      <div class="fm-toolbar">
+        <button class="icon-btn" onclick="NCfileManager.goBack()">←</button>
+        <div class="fm-path" id="fm-path">/</div>
+        <button class="icon-btn" onclick="NCfileManager.showMenu()">⋮</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
+        <div id="fm-list-left" class="fm-list"></div>
+      </div>
+      <div class="fm-status-bar" id="fm-status">Ready</div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="view-settings" class="view">
+      <div class="scroll-area">
+        <div class="settings-section">
+          <h3 class="settings-group-title">Appearance</h3>
+          <div class="setting-item">
+            <div><div class="setting-label">Theme</div></div>
+            <select class="select-sm" id="theme-select" onchange="NC.settings.setTheme(this.value)">
+              <option value="dark">Dark</option><option value="amoled">AMOLED</option>
+              <option value="light">Light</option><option value="purple">Purple</option><option value="ocean">Ocean</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Language</div></div>
+            <select class="select-sm" onchange="NC.settings.setLanguage(this.value)">
+              <option value="en">English</option><option value="yo">Yorùbá</option>
+              <option value="ha">Hausa</option><option value="ig">Igbo</option>
+              <option value="fr">Français</option><option value="es">Español</option>
+              <option value="pt">Português</option><option value="ar">العربية</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-group-title">Playback</h3>
+          <div class="setting-item">
+            <div><div class="setting-label">Hardware Acceleration</div><div class="setting-sub">GPU-accelerated video</div></div>
+            <label class="toggle"><input type="checkbox" id="hw-accel" onchange="NC.settings.toggle('hwAccel',this.checked)" checked/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Background Play</div><div class="setting-sub">Audio continues in background</div></div>
+            <label class="toggle"><input type="checkbox" id="bg-play" onchange="NC.settings.toggle('bgPlay',this.checked)" checked/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Resume Playback</div><div class="setting-sub">Resume from last position</div></div>
+            <label class="toggle"><input type="checkbox" id="resume-play" onchange="NC.settings.toggle('resumePlay',this.checked)" checked/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Low Power Mode</div><div class="setting-sub">Reduce battery usage</div></div>
+            <label class="toggle"><input type="checkbox" id="low-power" onchange="NC.settings.toggle('lowPower',this.checked)"/><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-group-title">Audio Enhancement</h3>
+          <div class="eq-section">
+            <div class="setting-item" style="border:none;padding:0 0 8px">
+              <div><div class="setting-label">Equalizer</div></div>
+              <label class="toggle"><input type="checkbox" id="eq-enabled" onchange="NCaudioEngine.toggleEQ(this.checked)"/><span class="toggle-slider"></span></label>
+            </div>
+            <div id="eq-controls" class="hidden">
+              <div class="eq-preset-row">
+                <button onclick="NCaudioEngine.applyPreset('flat')">Flat</button>
+                <button onclick="NCaudioEngine.applyPreset('bass')">Bass</button>
+                <button onclick="NCaudioEngine.applyPreset('vocal')">Vocal</button>
+                <button onclick="NCaudioEngine.applyPreset('rock')">Rock</button>
+                <button onclick="NCaudioEngine.applyPreset('pop')">Pop</button>
+                <button onclick="NCaudioEngine.applyPreset('jazz')">Jazz</button>
+              </div>
+              <div class="eq-sliders" id="eq-sliders"></div>
+            </div>
+            <div class="setting-item" style="border:none;padding:8px 0 0">
+              <div><div class="setting-label">Bass Boost</div></div>
+              <input type="range" min="0" max="20" value="0" id="bass-boost" onchange="NCaudioEngine.setBassBoost(this.value)" style="width:120px"/>
+            </div>
+            <div class="setting-item" style="border:none;padding:8px 0 0">
+              <div><div class="setting-label">Volume Normalization</div></div>
+              <label class="toggle"><input type="checkbox" id="vol-norm" onchange="NCaudioEngine.toggleNorm(this.checked)"/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-item" style="border:none;padding:8px 0 0">
+              <div><div class="setting-label">3D / Reverb Mode</div></div>
+              <label class="toggle"><input type="checkbox" id="reverb-mode" onchange="NCaudioEngine.toggleReverb(this.checked)"/><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-group-title">AI Settings</h3>
+          <div class="setting-item">
+            <div><div class="setting-label">Default AI Model</div></div>
+            <select class="select-sm" id="def-ai" onchange="NC.settings.set('defaultAI',this.value);NCai.setModel(this.value)">
+              <option value="auto">Auto</option>
+              <option value="px_gpt5">GPT-5</option>
+              <option value="dc_gpt4">GPT-4</option>
+              <option value="dc_claude">Claude</option>
+              <option value="dc_gemini">Gemini</option>
+              <option value="offline">Offline</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">AI in Code Editor</div></div>
+            <select class="select-sm" onchange="NC.settings.set('aiCodeMode',this.value)">
+              <option value="guide">Guide Mode</option>
+              <option value="autofix">Auto-Fix</option>
+              <option value="silent">Silent</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-group-title">Storage & Data</h3>
+          <div class="setting-item">
+            <div><div class="setting-label">Storage Used</div><div class="setting-sub" id="storage-used">Calculating...</div></div>
+            <button class="btn-sm" onclick="NCStorage.showDetails()">Details</button>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Clear Cache</div></div>
+            <button class="btn-sm btn-danger" onclick="NCStorage.clearCache()">Clear</button>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Scan & Clean Library</div></div>
+            <button class="btn-sm" onclick="NClibrary.scanAndCleanup()">Scan</button>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Export Backup</div></div>
+            <button class="btn-sm" onclick="NC.backup.export()">Export ZIP</button>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Import Backup</div></div>
+            <button class="btn-sm" onclick="NC.backup.import()">Import</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-group-title">Security</h3>
+          <div class="setting-item">
+            <div><div class="setting-label">Vault PIN</div><div class="setting-sub">Set/change your vault PIN</div></div>
+            <button class="btn-sm" onclick="NCvault.setPin()">Set PIN</button>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Auto-lock Vault</div><div class="setting-sub">Lock after 5 minutes</div></div>
+            <label class="toggle"><input type="checkbox" id="auto-lock" onchange="NC.settings.toggle('autoLock',this.checked)" checked/><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-group-title">Performance</h3>
+          <div class="setting-item">
+            <div><div class="setting-label">Lite Mode</div><div class="setting-sub">Disable animations</div></div>
+            <label class="toggle"><input type="checkbox" id="lite-mode" onchange="NC.settings.toggle('liteMode',this.checked)"/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div><div class="setting-label">Debug Mode</div></div>
+            <label class="toggle"><input type="checkbox" id="debug-mode" onchange="NC.settings.toggle('debugMode',this.checked)"/><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-group-title">About</h3>
+          <div class="about-card">
+            <div class="about-logo">⬡</div>
+            <div class="about-name">NovaCore</div>
+            <div class="about-ver">Version 2.0.0</div>
+            <div class="about-desc">All-in-one media player · AI assistant · Code editor · Downloader · File manager · Vault</div>
+            <div style="margin-top:12px;font-size:11px;color:var(--text3)">Uses DavidCyril &amp; Prexzy public APIs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="view-home" onclick="NCui.showView('view-home',this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" data-view="view-library" onclick="NCui.showView('view-library',this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <span>Library</span>
+    </button>
+    <button class="nav-btn" data-view="view-downloader" onclick="NCui.showView('view-downloader',this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>Download</span>
+    </button>
+    <button class="nav-btn" data-view="view-ai" onclick="NCui.showView('view-ai',this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+      <span>AI</span>
+    </button>
+    <button class="nav-btn" data-view="view-code" onclick="NCui.showView('view-code',this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <span>Code</span>
+    </button>
+    <button class="nav-btn" data-view="view-files" onclick="NCui.showView('view-files',this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>Files</span>
+    </button>
+  </nav>
+
+</div><!-- end #app -->
+
+<!-- ===== VLC VIDEO PLAYER OVERLAY ===== -->
+<div id="video-player" class="video-overlay hidden">
+  <!-- Raw video element — no controls, no z-index conflict -->
+  <video id="main-video" playsinline webkit-playsinline x5-playsinline preload="auto"
+    style="width:100%;height:100%;object-fit:contain;position:absolute;inset:0;z-index:500"></video>
+  <!-- Loading spinner -->
+  <div id="video-spinner" class="video-spinner" style="z-index:505"></div>
+  <!-- GESTURE LAYER — z-index 510, catches all gestures NOT blocked by controls -->
+  <div id="video-gesture-layer" class="gesture-layer" style="z-index:510"></div>
+  <!-- Seek feedback overlay -->
+  <div id="seek-feedback" class="seek-feedback" style="z-index:515"></div>
+  <!-- Volume indicator (right side) -->
+  <div id="vc-vol-indicator" class="vc-indicator" style="z-index:515">
+    <span class="vc-indicator-icon">🔊</span>
+    <div class="vc-indicator-bar"><div class="vc-indicator-fill" style="height:80%"></div></div>
+  </div>
+  <!-- Brightness indicator (left side) -->
+  <div id="vc-bright-indicator" class="vc-indicator vc-bright-indicator" style="z-index:515">
+    <span class="vc-indicator-icon">☀️</span>
+    <div class="vc-indicator-bar"><div class="vc-indicator-fill" style="height:80%"></div></div>
+  </div>
+  <!-- CONTROLS — z-index 520, ABOVE gesture layer — buttons always clickable -->
+  <div id="video-controls" class="video-controls" style="z-index:520">
+    <!-- Top bar -->
+    <div class="vc-top">
+      <button class="vc-btn" onclick="NCvideoPlayer.close()" style="font-size:18px">✕</button>
+      <div class="vc-title" id="vc-title">Video</div>
+      <div class="vc-top-right">
+        <button class="vc-btn" id="vc-fav-btn" onclick="NCvideoPlayer.addToFavorites()" title="Favorite">♡</button>
+        <button class="vc-btn" onclick="NCvideoPlayer.toggleAspect()" title="Aspect ratio">⊡</button>
+        <button class="vc-btn" onclick="NCvideoPlayer.toggleRotationLock()" title="Rotation lock">🔄</button>
+        <button class="vc-btn" onclick="NCvideoPlayer.togglePiP()" title="Picture in Picture">⧉</button>
+        <button class="vc-btn" onclick="NCvideoPlayer.toggleFullscreen()" title="Fullscreen">⛶</button>
+      </div>
+    </div>
+    <!-- Middle controls -->
+    <div class="vc-middle">
+      <button class="vc-side-btn" onclick="NCvideoPlayer.seek(-10)">⟨⟨ 10s</button>
+      <button class="vc-play-btn" id="vc-play-btn" onclick="NCvideoPlayer.togglePlay()">⏸</button>
+      <button class="vc-side-btn" onclick="NCvideoPlayer.seek(10)">10s ⟩⟩</button>
+    </div>
+    <!-- Bottom bar -->
+    <div class="vc-bottom">
+      <div class="vc-seek-row">
+        <span class="vc-time" id="vc-current">0:00</span>
+        <div class="vc-seek-wrap" id="vc-seek-wrap">
+          <div class="vc-seek-track"></div>
+          <div class="vc-seek-buffered" id="vc-seek-buffered" style="width:0%"></div>
+          <div class="vc-seek-fill" id="vc-seek-fill" style="width:0%"></div>
+          <div class="vc-seek-thumb" id="vc-seek-thumb" style="left:0%"></div>
+        </div>
+        <span class="vc-time" id="vc-duration">0:00</span>
+      </div>
+      <div class="vc-bottom-actions">
+        <div class="vc-left-btns">
+          <select class="vc-speed" id="vc-speed" onchange="NCvideoPlayer.setSpeed(this.value)">
+            <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option><option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option><option value="1.5">1.5×</option>
+            <option value="1.75">1.75×</option><option value="2">2×</option>
+            <option value="3">3×</option>
+          </select>
+        </div>
+        <div class="vc-right-btns">
+          <button class="vc-btn" onclick="NCsubtitles.openPanel()">CC</button>
+          <button class="vc-btn" onclick="NCvideoPlayer.showControls()">⋯</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Subtitle overlay -->
+  <div id="vc-subtitle-overlay" class="vc-subtitle-overlay" style="z-index:525"></div>
+</div>
+
+<!-- ===== MUSIC PLAYER OVERLAY ===== -->
+<div id="audio-player" class="audio-overlay hidden">
+  <div class="audio-bg">
+    <div class="audio-bg-blur" id="ap-bg-blur"></div>
+  </div>
+  <button class="ap-close-btn" onclick="NCaudioPlayer.collapse()">⌄</button>
+  <button class="ap-menu-btn" onclick="NCaudioPlayer.showQueue()">☰</button>
+  <div class="ap-content">
+    <!-- Album Art with Visualizer -->
+    <div class="ap-art-wrap">
+      <div class="ap-art" id="ap-art">🎵</div>
+      <div class="ap-visualizer"><canvas id="visualizer" width="220" height="220"></canvas></div>
+    </div>
+    <!-- Track Info -->
+    <div class="ap-track-info" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <div style="flex:1;min-width:0">
+          <div class="ap-title" id="ap-title">No Track</div>
+          <div class="ap-artist" id="ap-artist">Unknown Artist</div>
+        </div>
+        <button class="ap-fav-btn" id="ap-fav-btn" onclick="NCaudioPlayer.toggleFavorite()">♡</button>
+      </div>
+      <!-- Mini Lyrics -->
+      <div class="ap-lyrics-peek" id="ap-lyrics" onclick="NClosyrics.toggleFullscreen()">Tap for lyrics</div>
+    </div>
+    <!-- Seek Bar -->
+    <div class="ap-seek-area">
+      <div class="ap-seek-bar" id="ap-seek-bar">
+        <div class="ap-seek-fill" id="ap-seek-fill" style="width:0%"></div>
+        <div class="ap-seek-thumb" id="ap-seek-thumb" style="left:0%"></div>
+      </div>
+      <div class="ap-times">
+        <span id="ap-current">0:00</span>
+        <span id="ap-duration">0:00</span>
+      </div>
+    </div>
+    <!-- Controls -->
+    <div class="ap-controls">
+      <button class="ap-ctrl-btn" id="shuffle-btn" onclick="NCaudioPlayer.toggleShuffle()" title="Shuffle">⇄</button>
+      <button class="ap-ctrl-btn" onclick="NCaudioPlayer.prev()" title="Previous">⏮</button>
+      <button class="ap-play-btn" id="ap-play-btn" onclick="NCaudioPlayer.togglePlay()">⏸</button>
+      <button class="ap-ctrl-btn" onclick="NCaudioPlayer.next()" title="Next">⏭</button>
+      <button class="ap-ctrl-btn" id="repeat-btn" onclick="NCaudioPlayer.cycleRepeat()" title="Repeat">↺</button>
+    </div>
+    <!-- Extra buttons -->
+    <div class="ap-extras">
+      <button class="ap-extra-btn" onclick="NCaudioPlayer.showQueue()">Queue</button>
+      <button class="ap-extra-btn" onclick="NClosyrics.toggleFullscreen()">Lyrics</button>
+      <button class="ap-extra-btn" onclick="NCui.showView('view-settings');setTimeout(()=>document.getElementById('eq-enabled')?.scrollIntoView({behavior:'smooth'}),300)">EQ</button>
+      <button class="ap-extra-btn" onclick="NCaudioPlayer.close()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- MINI PLAYER (shown when audio player is collapsed) -->
+<div id="mini-player" class="mini-player hidden" onclick="NCaudioPlayer.expand()">
+  <div class="mini-thumb" id="mini-thumb">🎵</div>
+  <div style="display:flex;align-items:center;gap:6px;margin:0 6px">
+    <div class="mini-wave" id="mini-wave">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mini-info">
+    <div class="mini-title" id="mini-title">No Track</div>
+    <div class="mini-artist" id="mini-artist"></div>
+  </div>
+  <div class="mini-controls" onclick="event.stopPropagation()">
+    <button class="mini-btn" onclick="NCaudioPlayer.prev()">⏮</button>
+    <div class="mini-play-wrap" onclick="NCaudioPlayer.togglePlay()" id="mini-play-wrap">⏸</div>
+    <button class="mini-btn" onclick="NCaudioPlayer.next()">⏭</button>
+  </div>
+</div>
+
+<!-- VAULT OVERLAY -->
+<div id="vault-overlay" class="vault-overlay hidden">
+  <!-- Lock screen -->
+  <div id="vault-lock-screen" class="vault-lock-screen">
+    <div class="vault-icon">🔐</div>
+    <h2>Private Vault</h2>
+    <p style="color:var(--text2);font-size:13px">Enter your PIN to access</p>
+    <div class="pin-dots" id="pin-dots">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="pin-pad" id="pin-pad">
+      <button onclick="NCvault.pinInput('1')">1</button><button onclick="NCvault.pinInput('2')">2</button><button onclick="NCvault.pinInput('3')">3</button>
+      <button onclick="NCvault.pinInput('4')">4</button><button onclick="NCvault.pinInput('5')">5</button><button onclick="NCvault.pinInput('6')">6</button>
+      <button onclick="NCvault.pinInput('7')">7</button><button onclick="NCvault.pinInput('8')">8</button><button onclick="NCvault.pinInput('9')">9</button>
+      <button onclick="NCvault.pinInput('bio')">👆</button><button onclick="NCvault.pinInput('0')">0</button><button onclick="NCvault.pinInput('del')" style="font-size:18px">⌫</button>
+    </div>
+    <button class="vault-cancel" onclick="NCvault.close()">Cancel</button>
+  </div>
+  <!-- Vault content (shown after unlock) -->
+  <div id="vault-content" class="vault-content hidden">
+    <div class="vault-header">
+      <span>🔐 Vault</span>
+      <button onclick="NCvault.showTab('media')">Media</button>
+      <button onclick="NCvault.showTab('files')">Files</button>
+      <button onclick="NCvault.showTab('notes')">Notes</button>
+      <button onclick="NCvault.lock();NCvault.close()">Lock ✕</button>
+    </div>
+    <div id="vault-items" class="vault-items"></div>
+    <button class="vault-add-btn" onclick="NCvault.addItem()">+ Add to Vault</button>
+  </div>
+</div>
+
+<!-- QUEUE PANEL -->
+<div id="queue-panel" class="panel hidden">
+  <div class="panel-header">
+    <span>🎵 Queue</span>
+    <button onclick="NCaudioPlayer.closeQueue()">✕</button>
+  </div>
+  <div class="panel-body" style="padding:0">
+    <div id="queue-list" class="queue-list" style="padding:8px"></div>
+  </div>
+</div>
+
+<!-- SUBTITLE PANEL -->
+<div id="subtitle-panel" class="panel hidden">
+  <div class="panel-header">
+    <span>CC Subtitles</span>
+    <button onclick="NCsubtitles.closePanel()">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="sub-section">
+      <h4>Load Subtitle File</h4>
+      <button class="btn-primary full" onclick="document.getElementById('sub-file-input').click()">📂 Load .srt / .vtt / .ass file</button>
+    </div>
+    <div class="sub-section">
+      <h4>Search Subtitles Online</h4>
+      <div class="input-group" style="margin-bottom:8px">
+        <input class="input" id="sub-search-input" placeholder="Movie or show name..."/>
+        <button class="btn-primary" onclick="NCsubtitles.search()">Search</button>
+      </div>
+      <div id="sub-search-results"></div>
+    </div>
+    <div class="sub-section">
+      <h4>Settings</h4>
+      <div class="sub-style-row">
+        <label>Size: <input type="range" min="12" max="36" value="18" oninput="NCsubtitles.setSize(this.value)" style="width:80px"/></label>
+        <label>Color: <input type="color" value="#ffffff" onchange="NCsubtitles.setColor(this.value)" style="width:36px;height:24px;border:none;background:none"/></label>
+        <label>Sync (ms): <input type="number" value="0" onchange="NCsubtitles.setSync(this.value)" class="input-sm" style="width:64px"/></label>
+      </div>
+      <button class="btn-sm" onclick="NCsubtitles.toggle()">Toggle Subtitles On/Off</button>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE PANEL -->
+<div id="archive-panel" class="panel hidden">
+  <div class="panel-header">
+    <span>🗜 ZArchiver</span>
+    <button onclick="document.getElementById('archive-panel').classList.add('hidden')">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="archive-actions">
+      <button class="btn-primary" onclick="document.getElementById('archive-input').click()">📂 Open ZIP</button>
+      <button class="btn-secondary" onclick="NCarchive.createZip()">+ Create ZIP</button>
+    </div>
+    <div id="archive-list"></div>
+  </div>
+</div>
+
+<!-- LYRICS FULLSCREEN -->
+<div id="lyrics-fullscreen" class="lyrics-full hidden">
+  <div class="lyrics-full-header">
+    <button onclick="NClosyrics.toggleFullscreen()" style="font-size:20px;color:var(--text2)">✕</button>
+    <div style="flex:1;text-align:center;font-weight:700;font-size:15px" id="ap-lyrics-title">Lyrics</div>
+  </div>
+  <div class="lyrics-full-content" id="lyrics-full-content"></div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div id="search-overlay" class="search-overlay hidden">
+  <div class="search-bar-wrap">
+    <button onclick="NCsearch.close()" style="color:var(--text2);font-size:18px;padding:6px">←</button>
+    <input class="search-input" id="search-input" placeholder="Search media, lyrics, movies..." autofocus
+      oninput="NCsearch.onInput(this.value)" onkeydown="NCsearch.onKey(event)" autocomplete="off" spellcheck="false"/>
+  </div>
+  <div class="search-suggestions" id="search-suggestions"></div>
+  <div class="search-results" id="search-results">
+    <div class="empty-state"><span class="empty-icon">🔍</span><p>Search anything</p></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- HIDDEN FILE INPUTS -->
+<input type="file" id="video-file-input" accept="video/*,.mkv,.avi,.ts,.flv,.wmv" style="display:none"
+  onchange="NCvideoPlayer.loadFromFile(this)"/>
+<input type="file" id="audio-file-input" accept="audio/*,.flac,.ogg,.opus,.m4a" multiple style="display:none"
+  onchange="NCaudioPlayer.loadFromFiles(this)"/>
+<input type="file" id="any-file-input" accept="*/*" style="display:none"
+  onchange="NC.files.routeFile(this.files[0]);this.value=''"/>
+<input type="file" id="code-file-input" accept=".js,.ts,.html,.css,.py,.php,.json,.xml,.md,.txt,.c,.cpp,.java,.rb,.go,.sh,.rs,.vue,.jsx,.tsx,.sql,.yaml,.toml" style="display:none"
+  onchange="NCcodeEditor.loadFromFile(this)"/>
+<input type="file" id="vault-file-input" accept="video/*,audio/*,image/*,.pdf,.doc,.docx" multiple style="display:none"
+  onchange="NCvault.storeFiles(this)"/>
+<input type="file" id="status-file-input" accept="video/*,image/*" multiple style="display:none"
+  onchange="NCstatus.saveFiles(this)"/>
+<input type="file" id="sub-file-input" accept=".srt,.vtt,.ass,.ssa" style="display:none"
+  onchange="NCsubtitles.loadFromFile(this)"/>
+<input type="file" id="archive-input" accept=".zip" style="display:none"
+  onchange="NCarchive.loadFile(this)"/>
+<input type="file" id="backup-file-input" accept=".zip" style="display:none"
+  onchange="NC.backup.importFile(this)"/>
+
+<!-- SCRIPTS — load in dependency order -->
+<script src="js/storage.js"></script>
+<script src="js/ui/navigation.js"></script>
+<script src="js/ui/search.js"></script>
+<script src="js/apis/davidcyril.js"></script>
+<script src="js/apis/prexzy.js"></script>
+<script src="js/media/audio-engine.js"></script>
+<script src="js/media/video-player.js"></script>
+<script src="js/media/audio-player.js"></script>
+<script src="js/systems/downloader.js"></script>
+<script src="js/systems/library.js"></script>
+<script src="js/systems/subtitles.js"></script>
+<script src="js/systems/lyrics.js"></script>
+<script src="js/systems/status-saver.js"></script>
+<script src="js/systems/vault.js"></script>
+<script src="js/tools/ai-assistant.js"></script>
+<script src="js/tools/code-editor.js"></script>
+<script src="js/tools/archive.js"></script>
+<script src="js/tools/file-manager.js"></script>
+<script src="js/app.js"></script>
+<!-- CodeMirror -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/php/php.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous"></script>
+<!-- Service Worker -->
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}</script>
+</body>
+</html>
