@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">novacore</string>
+    <string name="title_activity_main">novacore</string>
+    <string name="package_name">com.precious.novacore</string>
+    <string name="custom_url_scheme">com.precious.novacore</string>
+</resources>

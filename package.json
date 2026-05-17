@@ -1,0 +1,14 @@
+{
+  "name": "novacore",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "echo 'web app'",
+    "build": "echo 'no build needed'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4"
+  }
+}

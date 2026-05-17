@@ -1,0 +1,15 @@
+{
+  "name": "NovaCore",
+  "short_name": "NovaCore",
+  "description": "Your All-in-One Media, Download, AI & Developer Powerhouse",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#7c3aed",
+  "orientation": "any",
+  "icons": [
+    { "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><circle cx='40' cy='40' r='38' fill='%237c3aed'/><path d='M28 25L55 40L28 55V25Z' fill='white'/></svg>", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "categories": ["entertainment", "utilities", "productivity"],
+  "lang": "en"
+}

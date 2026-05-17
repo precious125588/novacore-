@@ -1,0 +1,6 @@
+{
+  "appId": "com.precious.novacore",
+  "appName": "novacore",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
