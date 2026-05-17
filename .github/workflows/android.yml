@@ -1,4 +1,4 @@
-name: Build Android APK (Capacitor Safe)
+name: Android APK Build
 
 on:
   push:
@@ -15,11 +15,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install dependencies (safe mode)
-        run: |
-          if [ -f package.json ]; then npm install || true; fi
+      - name: Install dependencies
+        run: npm install
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -27,19 +26,15 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Capacitor CLI
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android || true
+      - name: Build Web
+        run: npm run build || echo "no build step"
 
       - name: Sync Capacitor
-        run: npx cap sync android || true
-
-      - name: Setup Android SDK (cloud)
-        uses: android-actions/setup-android@v3
+        run: npx cap sync android
 
       - name: Build APK
         run: |
           cd android
-          chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK
